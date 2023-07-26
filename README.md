@@ -5,7 +5,7 @@ This is my way to easily download Twitter media.
 
 ## Requirements
 
-> requests
+> requests\
 > PySocks
 
 ---
