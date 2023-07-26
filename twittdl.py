@@ -23,6 +23,10 @@ with open('img.txt', 'r') as f:
 with open('vid.txt', 'r') as f:
     vid_urls = f.read().splitlines()
 
+# Read the User-Agents from the text file
+with open('UA.txt', 'r') as f:
+    user_agents = f.read().splitlines()
+
 # Create a directory to store the downloaded media
 directory = input('Enter a name for folder: ')
 if not os.path.exists(directory):
@@ -30,21 +34,6 @@ if not os.path.exists(directory):
 
 # Create a session
 session = requests.Session()
-
-# Set up the headers for the session
-session.headers.update({
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36',
-    'Accept': 'application/json, text/plain, */*',
-    'Accept-Language': 'en-US,en;q=0.5',
-    'Accept-Encoding': 'gzip, deflate, br',
-    'Authorization': 'JWT null',
-    'Origin': 'https://www.brandbird.app',
-    'Connection': 'keep-alive',
-    'Referer': 'https://www.brandbird.app/',
-    'Sec-Fetch-Dest': 'empty',
-    'Sec-Fetch-Mode': 'cors',
-    'Sec-Fetch-Site': 'same-site'
-})
 
 # Load the SOCKS5 proxies from the Proxies class
 proxies = Proxies()
@@ -61,6 +50,20 @@ def make_request_with_retries(url, timeout=5, retries=3, verify=True, proxy_usag
                 proxy_usage_count[proxy] = 0
             if proxy_usage_count[proxy] >= proxy_usage_limit:
                 continue
+            # Update the User-Agent when the proxy changes
+            session.headers.update({
+                'User-Agent': user_agents[proxy_usage_count[proxy] % len(user_agents)],
+                'Accept': 'application/json, text/plain, */*',
+                'Accept-Language': 'en-US,en;q=0.5',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Authorization': 'JWT null',
+                'Origin': 'https://www.brandbird.app',
+                'Connection': 'keep-alive',
+                'Referer': 'https://www.brandbird.app/',
+                'Sec-Fetch-Dest': 'empty',
+                'Sec-Fetch-Mode': 'cors',
+                'Sec-Fetch-Site': 'same-site'
+            })
             session.proxies.update({
                 "http": f"socks5://{proxy}"
             })
