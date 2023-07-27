@@ -84,21 +84,31 @@ try:
     for tweet_url in img_urls:
         tweet_id = re.findall(r'/status/(\d+)', tweet_url)[0]
         img_url = f'https://api.brandbird.app/twitter/public/tweets/{tweet_id}/images'
-        response_img = make_request_with_retries(img_url, verify=True)
-        img_data = response_img.json()
-        image_urls = img_data['images']
-        
+        retry = True
+        while retry:
+            response_img = make_request_with_retries(img_url, verify=True)
+            img_data = response_img.json()
+            try:
+                image_urls = img_data['images']
+                retry = False
+            except KeyError:
+                print(f'Error: No images found for tweet {tweet_id}. Retrying with a new proxy...')
+                continue
+
         # Modify the image URLs to get higher resolution images
         new_image_urls = []
         for url in image_urls:
             new_url = url.replace('.jpg', '?format=png&name=4096x4096')
             new_image_urls.append(new_url)
-        
+
         # Download the images
         for i, url in enumerate(new_image_urls):
-            response = make_request_with_retries(url)
             filename = f'{directory}/{tweet_id}_{i}.png'
-            with open(f'{directory}/{tweet_id}_{i}.png', 'wb') as f:
+            if os.path.exists(filename):
+                print(f'Skipping image download: {filename} (already exists)')
+                continue
+            response = make_request_with_retries(url)
+            with open(filename, 'wb') as f:
                 f.write(response.content)
             print(f'Downloaded image: {filename}')
 
@@ -108,14 +118,17 @@ try:
         vid_url = f'https://api.brandbird.app/twitter/public/tweets/{tweet_id}/video'
         response_vid = make_request_with_retries(vid_url)
         vid_data = response_vid.json()
-        
+
         # Get the video URL
         video_url = vid_data['video']['url']
-        
+
         # Download the video
-        response = make_request_with_retries(video_url)
         filename = f'{directory}/{tweet_id}.mp4'
-        with open(f'{directory}/{tweet_id}.mp4', 'wb') as f:
+        if os.path.exists(filename):
+            print(f'Skipping video download: {filename} (already exists)')
+            continue
+        response = make_request_with_retries(video_url)
+        with open(filename, 'wb') as f:
             f.write(response.content)
         print(f'Downloaded video: {filename}')
 except KeyboardInterrupt:
