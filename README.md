@@ -48,7 +48,7 @@ Now all the media will be downloaded to the folder with the name of your choice.
 # Donation
 
 **[Buy me a coffee ☕](https://bmc.link/sanujans)**
-![](assets/bmc_sanujans.png)
+![](assets/bmc_sanujans.jpg)
 
 # License
 
