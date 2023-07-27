@@ -15,6 +15,7 @@ import re
 import requests
 from proxies import Proxies
 from requests.exceptions import Timeout
+from dist.config import IMG_URL, VID_URL
 
 # Read the URLs from the text files
 with open('img.txt', 'r') as f:
@@ -83,7 +84,7 @@ try:
     # Download images from the URLs in img.txt
     for tweet_url in img_urls:
         tweet_id = re.findall(r'/status/(\d+)', tweet_url)[0]
-        img_url = f'https://api.brandbird.app/twitter/public/tweets/{tweet_id}/images'
+        img_url = IMG_URL.format(tweet_id=tweet_id)
         retry = True
         while retry:
             response_img = make_request_with_retries(img_url, verify=True)
@@ -115,7 +116,7 @@ try:
     # Download videos from the URLs in vid.txt
     for tweet_url in vid_urls:
         tweet_id = re.findall(r'/status/(\d+)', tweet_url)[0]
-        vid_url = f'https://api.brandbird.app/twitter/public/tweets/{tweet_id}/video'
+        vid_url = VID_URL.format(tweet_id=tweet_id)
         response_vid = make_request_with_retries(vid_url)
         vid_data = response_vid.json()
 
