@@ -1,7 +1,7 @@
-# Twitter_DL
-This is my way to easily download Twitter media.
+# SN_Twi_DL
+This is my way to easily batch download Twitter media.
 
-**This code downloads Twitter Media as highest resolution available.**
+**This code downloads Twitter Media in highest resolution available.**
 
 ## Requirements
 
@@ -44,3 +44,12 @@ Now all the media will be downloaded to the folder with the name of your choice.
 
 ### That's it. Enjoy...
 ### If you like this project don't forget to give it a Star. 😁
+
+# Donation
+
+**[Buy me a coffee ☕](https://bmc.link/sanujans)**
+![](assets/bmc_sanujans.png)
+
+# License
+
+Apache License 2.0
