@@ -1,6 +1,8 @@
 # SN_Twi_DL
 This is my way to easily batch download Twitter media.
 
+**No account or API key required. Uses a private API for data scraping.**
+
 **This code downloads Twitter Media in highest resolution available.**
 
 ## Requirements
