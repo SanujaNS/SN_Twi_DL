@@ -1,4 +1,7 @@
 # SN_Twi_DL
+
+![](assets/img.jpg)
+
 This is my way to easily batch download Twitter media.
 
 ### > ***No account or API key required. Uses a private API for data scraping.***
@@ -31,11 +34,20 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### 3. Media URLs
+### 3. Add proxies to proxy.txt
+Add proxies as
+```
+ip:port
+ip:port
+```
+
+You can find free proxy lists just with a google search.
+
+### 4. Media URLs
 Add Twitter urls to img.txt if you want to get images,
 If you want to get videos then add urls to vid.txt
 
-### 4. Run Code
+### 5. Run Code
 ```python
 python twittdl.py
 ```
