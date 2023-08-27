@@ -1,11 +1,14 @@
 #!/usr/local/bin/python3
 # coding: utf-8
 
-# Twitter_DL - twittdl.py
-# 07/26/2023 16:52
+#
+# Copyright 2021 SanujaNS under the terms of the Apache License 2.0
+# license found at https://github.com/SanujaNS/SN_Twi_DL/blob/main/LICENSE
+# Twitter_DL - proxies.py
+# August 28, 2023 2:25
 #
 
-__author__ = "SanujaNS <sanuja.senaviratne@gmail.com>"
+__author__ = "SanujaNS <sanujas@sanuja.biz>"
 
 class Proxies:
 

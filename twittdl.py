@@ -1,11 +1,14 @@
 #!/usr/local/bin/python3
 # coding: utf-8
 
+#
+# Copyright 2021 SanujaNS under the terms of the Apache License 2.0
+# license found at https://github.com/SanujaNS/SN_Twi_DL/blob/main/LICENSE
 # Twitter_DL - twittdl.py
-# 07/26/2023 16:52
+# August 28, 2023 2:25
 #
 
-__author__ = "SanujaNS <sanuja.senaviratne@gmail.com>"
+__author__ = "SanujaNS <sanujas@sanuja.biz>"
 
 import os
 import signal
@@ -15,9 +18,9 @@ import re
 import requests
 from proxies import Proxies
 from requests.exceptions import Timeout
-from dist.config import IMG_URL, VID_URL
+from dist.config import IMG_URL, VID_URL, URL
 
-version = "1.1"
+version = "2.0"
 
 banner = f"""
 
@@ -88,9 +91,9 @@ def make_request_with_retries(url, timeout=5, retries=3, verify=True, proxy_usag
                 'Accept-Language': 'en-US,en;q=0.5',
                 'Accept-Encoding': 'gzip, deflate, br',
                 'Authorization': 'JWT null',
-                'Origin': 'https://www.brandbird.app',
+                'Origin': URL,
                 'Connection': 'keep-alive',
-                'Referer': 'https://www.brandbird.app/',
+                'Referer': URL + '/',
                 'Sec-Fetch-Dest': 'empty',
                 'Sec-Fetch-Mode': 'cors',
                 'Sec-Fetch-Site': 'same-site'
@@ -123,13 +126,13 @@ try:
                 image_urls = img_data['images']
                 retry = False
             except KeyError:
-                print(f'Error: No images found for tweet {tweet_id}. Retrying with a new proxy...')
-                continue
+                print(f'Error: No images found for tweet of {img_url}. Retrying with a new proxy...')
+                break
 
         # Modify the image URLs to get higher resolution images
         new_image_urls = []
         for url in image_urls:
-            new_url = url.replace('.jpg', '?format=png&name=4096x4096')
+            new_url = url.replace('.jpg', '?format=png&name=large')
             new_image_urls.append(new_url)
 
         # Download the images
@@ -147,11 +150,17 @@ try:
     for tweet_url in vid_urls:
         tweet_id = re.findall(r'/status/(\d+)', tweet_url)[0]
         vid_url = VID_URL.format(tweet_id=tweet_id)
-        response_vid = make_request_with_retries(vid_url)
-        vid_data = response_vid.json()
-
-        # Get the video URL
-        video_url = vid_data['video']['url']
+        retry = True
+        while retry:
+            response_vid = make_request_with_retries(vid_url, verify=True)
+            vid_data = response_vid.json()
+            try:
+                # Get the video URL
+                video_url = vid_data['video']['url']
+                retry = False
+            except KeyError:
+                print(f'Error: Access failed for tweet of {vid_url}. Retrying with a new proxy...')
+                break
 
         # Download the video
         filename = f'{directory}/{tweet_id}.mp4'
@@ -162,6 +171,13 @@ try:
         with open(filename, 'wb') as f:
             f.write(response.content)
         print(f'Downloaded video: {filename}')
+
+    # Cleanup
+    shutil.rmtree('__pycache__')
+    print("Your Downloads are Complete...")
+    print("Goodbye 👋")
+
+# Handling keyboard interruption
 except KeyboardInterrupt:
     print('Exiting Now...')
     try:
