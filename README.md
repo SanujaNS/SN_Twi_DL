@@ -1,6 +1,6 @@
 # SN_Twi_DL
 
-![](assets/img.jpg)
+![](assets/img.webp)
 
 This is my way to easily batch download Twitter media.
 
